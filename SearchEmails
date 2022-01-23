@@ -1,0 +1,32 @@
+Sub SearchEmails()
+
+    Dim olNS As NameSpace
+    Dim FolderInbox As MAPIFolder
+    Dim filtered_items As Items
+    Dim olMail As MailItem
+    Dim strFilter As String
+    
+    Set olNS = GetNamespace("MAPI")
+    Set FolderInbox = olNS.GetDefaultFolder(olFolderInbox)
+    
+    'strFilter = "@SQL= urn:schemas:httpmail:subject LIKE '%<Subject>%'"
+    strFilter = "@SQL= urn:schemas:httpmail:textdescription LIKE '%<Email Body>%'"
+
+    Set filtered_items = FolderInbox.Items.Restrict(strFilter)
+    
+    If filtered_items.Count = 0 Then
+        GoTo empty_objects
+    End If
+    
+    For Each olMail In filtered_items
+        
+        Debug.Print olMail.Subject
+        Debug.Print olMail.SenderEmailAddress
+        
+    Next olMail
+    
+empty_objects:
+    Set FolderInbox = Nothing
+    Set olNS = Nothing
+    
+End Sub
