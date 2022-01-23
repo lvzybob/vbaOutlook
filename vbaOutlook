@@ -1,0 +1,83 @@
+Sub GetFromOutlook()
+
+Dim OutlookApp As Outlook.Application
+
+Dim OutlookNamespace As Namespace
+
+Dim Folder As MAPIFolder
+
+Dim OutlookMail As Variant
+
+Dim i As Integer
+
+
+
+
+
+Set OutlookApp = New Outlook.Application
+
+Set OutlookNamespace = OutlookApp.GetNamespace("MAPI")
+
+'outlook folder name
+
+Set Folder = OutlookNamespace.Folders("XXXXX").Folders("XXXXXX")
+
+
+
+i = 2
+
+For Each OutlookMail In Folder.Items
+
+
+
+'to get the mail since the date XX/XX/XXXX, I put the date at cell (2,1) of sheet: info
+
+If OutlookMail.ReceivedTime >= Worksheets("Info").Cells(2, 1).Value Then
+
+'name of the mail contains
+
+If InStr(OutlookMail.Subject, "XXXXXX") > 0 Then
+
+'info of the mail
+
+Worksheets("Info").Cells(i, 2) = OutlookMail.Subject
+
+Worksheets("Info").Cells(i, 3) = OutlookMail.ReceivedTime
+
+Worksheets("Info").Cells(i, 4) = OutlookMail.SenderName
+
+Worksheets("Info").Cells(i, 5) = OutlookMail.Body
+
+'where to save the file
+
+saveFolder = "X:\XXXXXXXXX"
+
+Dim eachAttch As Outlook.Attachment
+
+Set myAttachments = OutlookMail.Attachments
+
+For Each eachAttch In myAttachments
+
+att = eachAttch.DisplayName
+
+Worksheets("Info").Cells(i, 6) = att
+
+eachAttch.SaveAsFile saveFolder & att
+
+Next eachAttch
+
+i = i + 1
+
+End If
+
+Else: Exit Sub
+
+End If
+
+Next OutlookMail
+
+
+
+
+
+End Sub
